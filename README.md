@@ -61,3 +61,41 @@ sensors
 ### Setting up email notifications
 TODO!!!
 Still need to figure out how this would work.
+
+## Setting up production VM
+Vm settings:
+- start at boot
+- VirtIO-GPU
+- VirtIO SCSI
+- assign resources (eg 4Gb ram, 2 cores)
+
+Install debian on the vm.
+I used user as new user.
+Set regions and keyboard layout.
+!! Make sure that SSH server is installed during install. This is then by default enabled.
+
+Update the os first, it needs to run as root with ``su root``:
+```
+apt update
+apt upgrade
+```
+
+### Installing docker
+As root:
+```
+apt install apt-transport-https ca-certificates curl gnupg lsb-release
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt update
+sudo apt install docker-ce docker-ce-cli containerd.io
+```
+
+Check the installed version:
+```
+docker --version
+```
+
+Change user rights to run dockers from the "user"
+```
+sudo usermod -aG docker user
+```
