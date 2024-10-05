@@ -15,8 +15,8 @@ The bare metal is running Proxmox VE as a hypervisor.
 
 These VM's are running on proxmox:
 - Truenas scale for managing all HDD's.
-- [Insert linux distro] for running all production docker services.
-- [Insert linux distro] for testing and experimenting (staging before production).
+- Debian for running all production docker services.
+- Debian for testing and experimenting (staging before production).
 - Possibly also windows or other VM's for desktop replacement and expanding the domotica setup.
 
 This is a list of docker containers deployed on the server:
