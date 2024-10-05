@@ -62,6 +62,23 @@ sensors
 TODO!!!
 Still need to figure out how this would work.
 
+## Setting up Truenas
+TODO:
+- pass through HDD's to VM and create ZFS pool
+- setup network shares and permissions (users)
+  - set a docker user
+  - set a media-server user
+  - set a nextcloud user
+  - set personal users
+ 
+### Setting up notifications using telegram
+Already had botfather configured on my telegram.
+Used ``/newbot`` to create the @nasnotifyalertbot, friendly chat name is Truenas-notifications.
+Opened the conversation from the botfather prompt.
+Used @userinfobot to get my ID and copied the token from the botfather prompt.
+
+Tested the config through Truenas.
+
 ## Setting up production VM
 Vm settings:
 - start at boot
