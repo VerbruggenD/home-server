@@ -79,6 +79,79 @@ Used @userinfobot to get my ID and copied the token from the botfather prompt.
 
 Tested the config through Truenas.
 
+### Passing a sata drive to a VM
+On the proxmox shell:
+Install lshw
+```
+apt install lshw
+```
+
+``lshw -class disk -class storage`` command shows the drives, like show here
+
+```
+  *-sata
+       description: SATA controller
+       product: Intel Corporation
+       vendor: Intel Corporation
+       physical id: 17
+       bus info: pci@0000:00:17.0
+       logical name: scsi4
+       version: 11
+       width: 32 bits
+       clock: 66MHz
+       capabilities: sata msi pm ahci_1.0 bus_master cap_list emulated
+       configuration: driver=ahci latency=0
+       resources: irq:147 memory:86000000-86001fff memory:86003000-860030ff ioport:7090(size=8) ioport:7080(size=4) ioport:7060(size=32) memory:86002000-860027ff
+     *-disk
+          description: ATA Disk
+          product: ST2000DM001-1ER1
+          physical id: 0.0.0
+          bus info: scsi@4:0.0.0
+          logical name: /dev/sda
+          version: CC26
+          serial: Z56041K1
+          size: 1863GiB (2TB)
+          capabilities: gpt-1.00 partitioned partitioned:gpt
+          configuration: ansiversion=5 guid=53be006c-8945-4f36-a0a9-74f9f36bb31b logicalsectorsize=512 sectorsize=4096
+```
+
+To get the ID for passing through by id instead of mount point do the following command: 
+``ls -l /dev/disk/by-id | grep $serialNumber`` replace the ``$serialNumber`` with the number from earlier.
+
+This gives something like this:
+``
+lrwxrwxrwx 1 root root  9 Oct  5 16:44 ata-ST2000DM001-1ER164_Z56041K1 -> ../../sda
+``
+
+Use the following to list all drives:
+```
+lsblk |awk 'NR==1{print $0" DEVICE-ID(S)"}NR>1{dev=$1;printf $0" ";system("find /dev/disk/by-id -lname \"*"dev"\" -printf \" %p\"");print "";}'|grep -v -E 'part|lvm'
+```
+
+Use the following command to attach the drive to the correct VM:
+make sure to replace the VM id and drive id with the correct values.
+
+!!! Make sure that scsi2 name is unique, so check first if it exists !!!
+
+```
+qm set $VM_ID -scsi2 /dev/disk/by-id/$DRIVE_ID
+```
+
+To disconnect the drive from the VM use:
+```
+qm unlink $VM_ID --idlist scsi2
+```
+
+For the truenas VM it currently has a VM-id of 100. The commands used are:
+```
+qm set 100 -scsi2 /dev/disk/by-id/$DRIVE_ID
+qm unlink 100 --idlist scsi2
+```
+Do this for every drive you want access to in Truenas.
+
+### Setting up zfs pool:
+TODO
+
 ## Setting up production VM
 Vm settings:
 - start at boot
