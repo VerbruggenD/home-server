@@ -210,5 +210,19 @@ sudo mount -t cifs -o username=docker,password=$userpassword //truenas.local/App
 
 To always mount at boot modify the file ``nano /etc/fstab`` to add the following at the end.
 ```
-
+//truenas.local/AppData /mnt/appdata cifs username=docker,password=Nskctl10,uid=1000,gid=1000,iocharset=utf8 0 0
+//truenas.local/media /mnt/media cifs username=docker,password=Nskctl10,uid=1000,gid=1000, iocharset=utf8 0 0
+//truenas.local/nextcloud_db /mnt/nextcloud_db cifs username=docker,password=Nskctl10,uid=999,gid=999, iocharset=utf8 0 0
+//truenas.local/nextcloud /mnt/nextcloud cifs  rw,mfsymlinks,seal,username=docker,password=Nskctl10,uid=33,gid=0,file_mode=0770,dir_mode=0770 0 0
 ```
+
+Here the nextcloud instance has special parameters to enable symlinks and user the correct user (uid=33). The database share needs to use uid 999 for able to work.
+
+### Installing nextcloud
+
+As earlier mentioned, the nextcloud instance needs special permissions to use the net share as the data directory and database dir.
+
+### Installing Jellyfin
+
+The media share is mounted and the docker uses this as the data volumne for media.
+
