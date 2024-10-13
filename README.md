@@ -189,3 +189,26 @@ Change user rights to run dockers from the "user"
 ```
 sudo usermod -aG docker user
 ```
+
+### Mounting AppData netshare at boot
+Create an appdata dataset in truenas and a user "docker" in the usergroup "appUsers".
+Create an SMB share (private) so it is undetected in the network unlike the other shares.
+
+!!! Figure out how to only have access to the share with 1 user.
+
+From root install cifs
+```
+apt install cifs-utils
+```
+
+Create the mount point like this: ``mkdir -p /mnt/appdata``
+
+You can manually mount (once per boot) with
+```
+sudo mount -t cifs -o username=docker,password=$userpassword //truenas.local/AppData /mnt/appdata
+```
+
+To always mount at boot modify the file ``nano /etc/fstab`` to add the following at the end.
+```
+
+```
